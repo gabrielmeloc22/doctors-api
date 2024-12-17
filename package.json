@@ -1,0 +1,31 @@
+{
+    "name": "doctors-calendar",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "clean": "turbo clean",
+        "dev": "turbo dev",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "lint": "turbo lint",
+        "test": "turbo test",
+        "prepare": "husky"
+    },
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "lint-staged": "^15.2.11",
+        "prettier": "catalog:",
+        "turbo": "^2.3.3"
+    },
+    "engines": {
+        "node": ">=14.0.0",
+        "npm": ">=7.0.0"
+    },
+    "packageManager": "pnpm@9.14.4",
+    "lint-staged": {
+        "*.{ts,tsx,md,js}": [
+            "pnpm format --",
+            "pnpm lint -- --no-warn-ignored"
+        ]
+    }
+}

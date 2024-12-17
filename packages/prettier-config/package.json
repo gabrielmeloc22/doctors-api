@@ -1,0 +1,14 @@
+{
+  "name": "prettier-config",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "prettier": "catalog:",
+    "prettier-plugin-organize-imports": "^4.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
