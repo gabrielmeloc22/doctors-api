@@ -1,38 +1,20 @@
-import js from "@eslint/js"
-import pluginNext from "@next/eslint-plugin-next"
-import eslintConfigPrettier from "eslint-config-prettier"
+import { FlatCompat } from "@eslint/eslintrc"
 import pluginReact from "eslint-plugin-react"
 import pluginReactHooks from "eslint-plugin-react-hooks"
-import globals from "globals"
-import tseslint from "typescript-eslint"
 import { config as baseConfig } from "./base.js"
+
+const compat = new FlatCompat({
+    baseDirectory: import.meta.dirname,
+})
 
 /**
  * @type {import("eslint").Linter.Config}
  * */
 export const config = [
     ...baseConfig,
-    js.configs.recommended,
-    eslintConfigPrettier,
-    ...tseslint.configs.recommended,
-    {
-        ...pluginReact.configs.flat.recommended,
-        languageOptions: {
-            ...pluginReact.configs.flat.recommended.languageOptions,
-            globals: {
-                ...globals.serviceworker,
-            },
-        },
-    },
-    {
-        plugins: {
-            "@next/next": pluginNext,
-        },
-        rules: {
-            ...pluginNext.configs.recommended.rules,
-            // ...pluginNext.configs["core-web-vitals"].rules,
-        },
-    },
+    ...compat.extends("next/core-web-vitals"),
+    ...compat.extends("next/typescript"),
+    pluginReact.configs.flat.recommended,
     {
         plugins: {
             "react-hooks": pluginReactHooks,
