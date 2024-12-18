@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 export default function Web(): ReactNode {
-    return <h1>batata</h1>
+    return <h1>batata</h1>;
 }

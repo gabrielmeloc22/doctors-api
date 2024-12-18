@@ -5,10 +5,10 @@
 const config = {
     trailingComma: "es5",
     tabWidth: 4,
-    semi: false,
+    semi: true,
     singleQuote: false,
     arrowParens: "always",
     plugins: ["prettier-plugin-organize-imports"],
-}
+};
 
-export default config
+export default config;
