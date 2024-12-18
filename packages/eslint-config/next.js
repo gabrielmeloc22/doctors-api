@@ -1,11 +1,11 @@
-import { FlatCompat } from "@eslint/eslintrc"
-import pluginReact from "eslint-plugin-react"
-import pluginReactHooks from "eslint-plugin-react-hooks"
-import { config as baseConfig } from "./base.js"
+import { FlatCompat } from "@eslint/eslintrc";
+import pluginReact from "eslint-plugin-react";
+import pluginReactHooks from "eslint-plugin-react-hooks";
+import { config as baseConfig } from "./base.js";
 
 const compat = new FlatCompat({
     baseDirectory: import.meta.dirname,
-})
+});
 
 /**
  * @type {import("eslint").Linter.Config}
@@ -25,4 +25,5 @@ export const config = [
             "react/react-in-jsx-scope": "off",
         },
     },
-]
+    { ignores: [".next"] },
+];
