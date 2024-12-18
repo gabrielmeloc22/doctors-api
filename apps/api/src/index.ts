@@ -1,6 +1,6 @@
-import { createServer } from "./server"
+import { createApp } from "./app"
 
 const port = process.env.PORT || 3001
-const server = createServer()
+const server = createApp()
 
 server.listen(port, () => {})
