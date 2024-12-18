@@ -1,6 +1,11 @@
-import { createApp } from "./app"
+import { createApp } from "./app";
+import { router } from "./routes";
 
-const port = process.env.PORT || 3001
-const server = createApp()
+const port = process.env.PORT || 3001;
+const app = createApp();
 
-server.listen(port, () => {})
+app.use(router);
+
+app.listen(port, () => {
+    console.log(`Server started at ${port}`);
+});
