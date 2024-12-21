@@ -18,7 +18,7 @@ export const sanitizeTestObject = (
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (Object.getPrototypeOf(v).constructor.name === "Object") {
+        if (v && Object.getPrototypeOf(v).constructor.name === "Object") {
             return {
                 ...acc,
                 [k]: sanitizeTestObject({

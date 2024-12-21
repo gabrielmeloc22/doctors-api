@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should post, create a new slot and return 201 1`] = `
+{
+  "slot": {
+    "doctor_id": "329b388a-9d60-4fd1-a65e-240bac848cd8",
+    "duration": 30,
+    "end_time": "2025-01-01",
+    "repeat": {
+      "days": null,
+      "end": "2025-01-01",
+      "type": "DAILY",
+    },
+    "start_time": "2025-01-01",
+  },
+  "success": true,
+}
+`;

@@ -37,7 +37,7 @@ const doctorCreatePostHandler: RequestHandler<
 > = async (req, res) => {
     const body = req.body;
 
-    const existingDoctor = await db
+    const [existingDoctor] = await db
         .select()
         .from(doctorTable)
         .where(
@@ -47,7 +47,7 @@ const doctorCreatePostHandler: RequestHandler<
             )
         );
 
-    if (existingDoctor[0]) {
+    if (existingDoctor) {
         res.status(400);
         res.json({
             success: false,
