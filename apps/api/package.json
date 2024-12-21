@@ -2,16 +2,16 @@
     "name": "api",
     "version": "0.0.0",
     "private": true,
-    "type": "module",
     "scripts": {
-        "build": "tsc",
+        "build": "tsup src/index.ts",
         "clean": "rm -rf dist",
-        "dev": "nodemon --exec \"tsx --env-file=.env.local ./src/index.ts\" -e .ts",
+        "dev": "nodemon --exec \"tsx --env-file=.env ./src/index.ts\" -e .ts",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\" --max-warnings 0",
-        "start": "tsx --env-file=.env.local ./src/index.ts",
+        "start": "tsx --env-file=.env ./src/index.ts",
         "test": "vitest",
         "db:generate": "dotenv -- drizzle-kit generate",
-        "db:migrate": "dotenv -- drizzle-kit migrate"
+        "db:migrate": "dotenv -- drizzle-kit migrate",
+        "db:studio": "dotenv -- drizzle-kit studio"
     },
     "dependencies": {
         "body-parser": "^1.20.3",
@@ -36,6 +36,7 @@
         "eslint": "catalog:",
         "nodemon": "^3.1.9",
         "supertest": "^7.0.0",
+        "tsup": "^8.3.5",
         "tsx": "^4.19.2",
         "typescript": "catalog:",
         "vitest": "^2.1.8"

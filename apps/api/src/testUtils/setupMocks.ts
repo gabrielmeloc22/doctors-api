@@ -13,17 +13,13 @@ vi.doMock("../database/db.ts", () => {
 beforeEach(async () => {
     const { db } = await import("../database/db");
 
-    // @ts-expect-error using pg lite to mock
     await migrate(db, { migrationsFolder: "migrations" });
 });
 
 afterEach(async () => {
     const { db } = await import("../database/db");
 
-    // @ts-expect-error using pg lite to mock
     await db.execute(sql`drop schema if exists public cascade`);
-    // @ts-expect-error using pg lite to mock
     await db.execute(sql`create schema public`);
-    // @ts-expect-error using pg lite to mock
     await db.execute(sql`drop schema if exists drizzle cascade`);
 });
