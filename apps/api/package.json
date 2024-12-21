@@ -9,10 +9,7 @@
         "dev": "nodemon --exec \"tsx --env-file=.env.local ./src/index.ts\" -e .ts",
         "lint": "tsc --noEmit && eslint \"src/**/*.ts*\" --max-warnings 0",
         "start": "tsx --env-file=.env.local ./src/index.ts",
-        "test": "jest --detectOpenHandles"
-    },
-    "jest": {
-        "preset": "@repo/jest-presets/node"
+        "test": "vitest",
     },
     "dependencies": {
         "body-parser": "^1.20.3",
@@ -36,6 +33,6 @@
         "nodemon": "^3.1.9",
         "supertest": "^7.0.0",
         "tsx": "^4.19.2",
-        "typescript": "catalog:"
+        "vitest": "^2.1.8"
     }
 }
