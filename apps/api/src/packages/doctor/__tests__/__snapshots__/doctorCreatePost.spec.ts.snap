@@ -1,11 +1,40 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`should post invalid payload and return 400 1`] = `
+[
+  {
+    "message": "Username must have 5 or more characters",
+    "path": [
+      "username",
+    ],
+  },
+  {
+    "message": "Invalid email",
+    "path": [
+      "email",
+    ],
+  },
+  {
+    "message": "Required",
+    "path": [
+      "first_name",
+    ],
+  },
+  {
+    "message": "Required",
+    "path": [
+      "last_name",
+    ],
+  },
+]
+`;
+
 exports[`should post, create a new doctor and return 201 1`] = `
 {
   "doctor": {
     "email": "doc@mail.com",
     "first_name": "John",
-    "id": "1b3cffbc-0f1a-4d43-ab5f-71ca3db21b91",
+    "id": "FROZEN-ID",
     "last_name": "Doe",
     "username": "doc007",
   },

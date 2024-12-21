@@ -13,7 +13,7 @@ vi.doMock("../database/db.ts", () => {
 beforeEach(async () => {
     const { db } = await import("../database/db");
 
-    await migrate(db, { migrationsFolder: "migrations" });
+    await migrate(db, { migrationsFolder: "./src/migrations" });
 });
 
 afterEach(async () => {

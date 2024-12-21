@@ -10,7 +10,7 @@ router.use((req, res, next) => {
 });
 
 // doctor routes
-router.post("/doctors", ...doctorCreatePost);
+router.post("/doctors", doctorCreatePost);
 router.post("/doctors/[id]/slots", routeNotImplemented);
 router.get("/doctors/[id]/bookings", routeNotImplemented);
 router.get("/doctors/[id]/available_slots", routeNotImplemented);

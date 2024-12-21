@@ -1,10 +1,22 @@
 import { RequestHandler } from "express";
-import { AnyZodObject } from "zod";
+import { AnyZodObject, ZodError } from "zod";
 
 type ValidateRequestArgs = {
     body?: AnyZodObject;
     query?: AnyZodObject;
     params?: AnyZodObject;
+};
+
+type FormattedZodError = {
+    path: (string | number)[];
+    message: string;
+};
+
+const formatZodError = (error: ZodError): FormattedZodError[] => {
+    return error.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message,
+    }));
 };
 
 export const validateRequest = (args: ValidateRequestArgs): RequestHandler => {
@@ -17,7 +29,10 @@ export const validateRequest = (args: ValidateRequestArgs): RequestHandler => {
             const bodyResult = await args.body.safeParseAsync(req.body);
 
             if (!bodyResult.success) {
-                res.status(400).json(bodyResult.error);
+                res.status(400).json({
+                    error: formatZodError(bodyResult.error),
+                    success: false,
+                });
                 return;
             }
         }
@@ -26,7 +41,10 @@ export const validateRequest = (args: ValidateRequestArgs): RequestHandler => {
             const queryResult = await args.query.safeParseAsync(req.query);
 
             if (!queryResult.success) {
-                res.status(400).json(queryResult.error);
+                res.status(400).json({
+                    error: formatZodError(queryResult.error),
+                    success: false,
+                });
                 return;
             }
         }
@@ -35,7 +53,10 @@ export const validateRequest = (args: ValidateRequestArgs): RequestHandler => {
             const paramsResult = await args.params.safeParseAsync(req.params);
 
             if (!paramsResult.success) {
-                res.status(400).json(paramsResult.error);
+                res.status(400).json({
+                    error: formatZodError(paramsResult.error),
+                    success: false,
+                });
                 return;
             }
         }

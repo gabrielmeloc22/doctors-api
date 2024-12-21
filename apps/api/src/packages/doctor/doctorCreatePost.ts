@@ -1,3 +1,4 @@
+import { eq, or } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
@@ -35,6 +36,26 @@ const doctorCreatePostHandler: RequestHandler<
     DoctorCreatePostBody
 > = async (req, res) => {
     const body = req.body;
+
+    const existingDoctor = await db
+        .select()
+        .from(doctorTable)
+        .where(
+            or(
+                eq(doctorTable.username, req.body.username),
+                eq(doctorTable.email, req.body.email)
+            )
+        );
+
+    if (existingDoctor[0]) {
+        res.status(400);
+        res.json({
+            success: false,
+            error: "Doctor already exists",
+        });
+
+        return;
+    }
 
     const result = await db
         .insert(doctorTable)
