@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should post, create a new doctor and return 201 1`] = `
+{
+  "createdAt": "FROZEN-CREATEDAT",
+  "email": "doc@mail.com",
+  "firstName": "John",
+  "id": "FROZEN-ID",
+  "lastName": "Doe",
+  "updatedAt": "FROZEN-UPDATEDAT",
+  "username": "doc007",
+}
+`;
