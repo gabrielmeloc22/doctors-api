@@ -2,12 +2,13 @@
 
 exports[`should post, create a new doctor and return 201 1`] = `
 {
-  "createdAt": "FROZEN-CREATEDAT",
-  "email": "doc@mail.com",
-  "firstName": "John",
-  "id": "FROZEN-ID",
-  "lastName": "Doe",
-  "updatedAt": "FROZEN-UPDATEDAT",
-  "username": "doc007",
+  "doctor": {
+    "email": "doc@mail.com",
+    "first_name": "John",
+    "id": "1b3cffbc-0f1a-4d43-ab5f-71ca3db21b91",
+    "last_name": "Doe",
+    "username": "doc007",
+  },
+  "success": true,
 }
 `;

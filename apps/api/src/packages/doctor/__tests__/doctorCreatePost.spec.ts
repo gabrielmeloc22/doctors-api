@@ -12,8 +12,8 @@ it("should post, create a new doctor and return 201", async () => {
     const app = createApp();
 
     const payload = {
-        firstName: "John",
-        lastName: "Doe",
+        first_name: "John",
+        last_name: "Doe",
         username: "doc007",
         email: "doc@mail.com",
     };
@@ -26,22 +26,29 @@ it("should post, create a new doctor and return 201", async () => {
     const doctors = await db.select().from(doctorTable);
     const doctor = doctors[0];
 
+    const doctorResult = {
+        id: doctor?.id,
+        username: doctor?.username,
+        first_name: doctor?.firstName,
+        last_name: doctor?.lastName,
+        email: doctor?.email,
+    };
+
+    const body = response.body as Record<string, unknown>;
+
     expect(doctors.length).toBe(1);
 
-    expect(doctor).toMatchObject(payload);
+    expect(doctorResult).toMatchObject(payload);
 
-    expect(response.body).toMatchObject({
-        doctor: {
-            id: doctor?.id,
-            username: doctor?.username,
-            firstName: doctor?.firstName,
-            lastName: doctor?.lastName,
-            email: doctor?.email,
-        },
+    expect(body).toMatchObject({
+        doctor: doctorResult,
         success: true,
     });
 
     expect(
-        sanitizeTestObject({ obj: doctor, frozenKeys: defaultFrozenKeys })
+        sanitizeTestObject({
+            obj: body,
+            frozenKeys: defaultFrozenKeys,
+        })
     ).toMatchSnapshot();
 });
