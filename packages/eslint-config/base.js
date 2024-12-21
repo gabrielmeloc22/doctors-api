@@ -1,8 +1,9 @@
-import { default as eslint, default as js } from "@eslint/js"
-import eslintConfigPrettier from "eslint-config-prettier"
-import onlyWarn from "eslint-plugin-only-warn"
-import turboPlugin from "eslint-plugin-turbo"
-import tseslint from "typescript-eslint"
+import { default as eslint, default as js } from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
+import onlyWarn from "eslint-plugin-only-warn";
+import turboPlugin from "eslint-plugin-turbo";
+import vitest from "eslint-plugin-vitest";
+import tseslint from "typescript-eslint";
 
 /** @type {import('eslint').Linter.Config[]} */
 export const config = [
@@ -35,6 +36,20 @@ export const config = [
         },
     },
     {
+        files: ["**/__tests__/**"], // or any other pattern
+        plugins: {
+            vitest,
+        },
+        rules: {
+            ...vitest.configs.recommended.rules,
+        },
+        languageOptions: {
+            globals: {
+                ...vitest.environments.env.globals,
+            },
+        },
+    },
+    {
         plugins: {
             onlyWarn,
         },
@@ -42,4 +57,4 @@ export const config = [
     {
         ignores: ["dist/**", "eslint.config.js"],
     },
-]
+];
