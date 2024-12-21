@@ -2,10 +2,10 @@
     "extends": "@repo/typescript-config/base.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "rootDir": "./src",
+        "rootDir": ".",
         "module": "Preserve",
         "moduleResolution": "Bundler"
     },
     "exclude": ["node_modules"],
-    "include": ["src", "env.d.ts"]
+    "include": ["src", "env.d.ts", "vitest.config.ts", "drizzle.config.ts"]
 }
