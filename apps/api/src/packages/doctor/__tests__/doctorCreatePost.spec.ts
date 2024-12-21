@@ -6,8 +6,8 @@ import {
     defaultFrozenKeys,
     sanitizeTestObject,
 } from "../../../testUtils/sanitizeTestObject";
+import { createDoctor } from "../__fixtures__/createDoctor";
 import { doctorTable } from "../doctorTable";
-import { createDoctor } from "../fixtures/createDoctor";
 
 it("should post, create a new doctor and return 201", async () => {
     const app = createApp();

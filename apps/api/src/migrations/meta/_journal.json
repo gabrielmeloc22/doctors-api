@@ -15,6 +15,20 @@
       "when": 1734764104108,
       "tag": "0001_tough_natasha_romanoff",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1734803784991,
+      "tag": "0002_amused_energizer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1734804321668,
+      "tag": "0003_loud_spitfire",
+      "breakpoints": true
     }
   ]
 }

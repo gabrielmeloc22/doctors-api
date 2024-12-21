@@ -7,7 +7,7 @@ export const createDoctor = async (
 ): Promise<IDoctor> => {
     const doctorCount = await db.$count(doctorTable);
 
-    const doctor = await db
+    const [doctor] = await db
         .insert(doctorTable)
         .values({
             email: `doc${doctorCount}@mail.com`,
@@ -18,5 +18,5 @@ export const createDoctor = async (
         })
         .returning();
 
-    return doctor[0] as IDoctor;
+    return doctor as IDoctor;
 };

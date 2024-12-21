@@ -7,7 +7,7 @@ import {
     sanitizeTestObject,
 } from "../../../testUtils/sanitizeTestObject";
 import { SLOT_REPEAT_TYPE_ENUM, slotTable } from "../../slot/slotTable";
-import { createDoctor } from "../fixtures/createDoctor";
+import { createDoctor } from "../__fixtures__/createDoctor";
 
 it("should post, create a new slot and return 201", async () => {
     const app = createApp();
@@ -31,22 +31,20 @@ it("should post, create a new slot and return 201", async () => {
         .send(payload);
 
     const slots = await db.select().from(slotTable);
-    const slot = slots[0];
+    const [slot] = slots;
 
     const slotResult = {
         doctor_id: slot?.doctorId,
         duration: slot?.duration,
-        start_time: slot?.startTime,
-        end_time: slot?.endTime,
+        start_time: slot?.startTime.toISOString(),
+        end_time: slot?.endTime.toISOString(),
         repeat: {
             type: slot?.repeatType,
-            days: slot?.repeatWeekdays || null,
-            end: slot?.endTime || null,
+            days: slot?.repeatWeekdays,
+            end: slot?.endTime.toISOString(),
         },
     };
     const body = response.body as Record<string, unknown>;
-
-    console.log({ body: JSON.stringify(body) });
 
     expect(response.status).toBe(201);
     expect(slots).toHaveLength(1);
@@ -59,7 +57,7 @@ it("should post, create a new slot and return 201", async () => {
     expect(
         sanitizeTestObject({
             obj: body,
-            frozenKeys: defaultFrozenKeys,
+            frozenKeys: [...defaultFrozenKeys, "doctor_id"],
         })
     ).toMatchSnapshot();
 });

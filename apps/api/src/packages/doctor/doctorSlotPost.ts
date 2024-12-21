@@ -70,13 +70,13 @@ const doctorSlotCreatePostHandler: RequestHandler<
         return;
     }
 
-    const getRepeatEnd = (): { repeatEnd?: string } => {
+    const getRepeatEnd = (): { repeatEnd?: Date } => {
         if (body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.DAILY) {
-            return { repeatEnd: body.repeat.end };
+            return { repeatEnd: new Date(body.repeat.end) };
         }
 
         if (body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.WEEKLY) {
-            return { repeatEnd: body.repeat.end };
+            return { repeatEnd: new Date(body.repeat.end) };
         }
 
         return {};
@@ -104,8 +104,8 @@ const doctorSlotCreatePostHandler: RequestHandler<
         .insert(slotTable)
         .values({
             doctorId: doctor.id,
-            startTime: body.start_time,
-            endTime: body.end_time,
+            startTime: new Date(body.start_time),
+            endTime: new Date(body.end_time),
             duration: body.duration,
             ...getRepeatType(),
             ...getRepeatEnd(),
@@ -124,12 +124,12 @@ const doctorSlotCreatePostHandler: RequestHandler<
         slot: {
             doctor_id: slot.doctorId,
             duration: slot.duration,
-            start_time: slot.startTime,
-            end_time: slot.endTime,
+            start_time: slot.startTime.toISOString(),
+            end_time: slot.endTime.toISOString(),
             repeat: {
                 type: slot.repeatType,
                 days: slot.repeatWeekdays,
-                end: slot.endTime,
+                end: slot.endTime.toISOString(),
             },
         },
     });

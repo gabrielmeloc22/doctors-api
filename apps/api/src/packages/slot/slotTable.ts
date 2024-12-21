@@ -19,12 +19,12 @@ export const slotTable = t.pgTable("slot", {
         .uuid()
         .references(() => doctorTable.id)
         .notNull(),
-    startTime: t.date().notNull(),
-    endTime: t.date(),
+    startTime: t.timestamp().notNull(),
+    endTime: t.timestamp().notNull(),
     duration: t.integer().notNull(),
     repeatType: slotRepeatTypeEnum().notNull(),
     repeatWeekdays: t.integer().array(),
-    repeatEnd: t.date(),
+    repeatEnd: t.timestamp(),
     ...timestampField,
     ...idField,
 });
