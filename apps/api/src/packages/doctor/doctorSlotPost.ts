@@ -135,7 +135,7 @@ const doctorSlotCreatePostHandler: RequestHandler<
     });
 };
 
-export const doctorSlotCreatePost: RequestHandler[] = [
+export const doctorSlotPost: RequestHandler[] = [
     validateRequest({
         body: doctorSlotCreatePostBodySchema,
         params: doctorSlotCreatePostParams,

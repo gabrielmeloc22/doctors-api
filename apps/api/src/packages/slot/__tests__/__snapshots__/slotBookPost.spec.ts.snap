@@ -1,0 +1,80 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should post, book a in a daily slot and return 201 1`] = `
+{
+  "booking": {
+    "id": "FROZEN-ID",
+    "patient_id": "some-id",
+    "reason": "checkup",
+    "slot_id": "FROZEN-SLOT_ID",
+    "time": "2024-12-22T10:00:00.000Z",
+  },
+  "success": true,
+}
+`;
+
+exports[`should post, book a in a single slot and return 201 1`] = `
+{
+  "booking": {
+    "id": "FROZEN-ID",
+    "patient_id": "some-id",
+    "reason": "checkup",
+    "slot_id": "FROZEN-SLOT_ID",
+    "time": "2024-12-21T10:30:00.000Z",
+  },
+  "success": true,
+}
+`;
+
+exports[`should post, book a in a weekly slot and return 201 1`] = `
+{
+  "booking": {
+    "id": "FROZEN-ID",
+    "patient_id": "some-id",
+    "reason": "checkup",
+    "slot_id": "FROZEN-SLOT_ID",
+    "time": "2024-12-23T10:00:00.000Z",
+  },
+  "success": true,
+}
+`;
+
+exports[`should validate body and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Required",
+      "path": [
+        "reason",
+      ],
+    },
+    {
+      "message": "Required",
+      "path": [
+        "patient_id",
+      ],
+    },
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "start_time",
+      ],
+    },
+  ],
+  "success": false,
+}
+`;
+
+exports[`should validate params and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Invalid uuid",
+      "path": [
+        "id",
+      ],
+    },
+  ],
+  "success": false,
+}
+`;

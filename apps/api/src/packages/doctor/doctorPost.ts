@@ -89,7 +89,7 @@ const doctorCreatePostHandler: RequestHandler<
     });
 };
 
-export const doctorCreatePost: RequestHandler[] = [
+export const doctorPost: RequestHandler[] = [
     validateRequest({ body: doctorCreatePostBodySchema }),
     doctorCreatePostHandler,
 ];
