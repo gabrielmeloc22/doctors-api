@@ -1,0 +1,94 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should get bookings within the date range for given slot 1`] = `
+{
+  "slots": {
+    "2024-12-21T03:00:00.000Z": [
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-21T08:00:00.000Z",
+        "time_slot": 0,
+      },
+    ],
+    "2024-12-22T03:00:00.000Z": [
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-22T08:00:00.000Z",
+        "time_slot": 0,
+      },
+    ],
+    "2024-12-23T03:00:00.000Z": [
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-23T08:00:00.000Z",
+        "time_slot": 0,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-23T11:00:00.000Z",
+        "time_slot": 2,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-23T11:30:00.000Z",
+        "time_slot": 3,
+      },
+    ],
+    "2024-12-24T03:00:00.000Z": [
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-24T08:00:00.000Z",
+        "time_slot": 0,
+      },
+    ],
+    "2024-12-25T03:00:00.000Z": [
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-25T08:00:00.000Z",
+        "time_slot": 0,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-25T10:30:00.000Z",
+        "time_slot": 1,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-25T11:00:00.000Z",
+        "time_slot": 2,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-25T11:30:00.000Z",
+        "time_slot": 3,
+      },
+      {
+        "id": "FROZEN-ID",
+        "start_time": "2024-12-25T15:00:00.000Z",
+        "time_slot": 0,
+      },
+    ],
+  },
+  "success": true,
+}
+`;
+
+exports[`should validate params and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "start_time",
+      ],
+    },
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "end_time",
+      ],
+    },
+  ],
+  "success": false,
+}
+`;
