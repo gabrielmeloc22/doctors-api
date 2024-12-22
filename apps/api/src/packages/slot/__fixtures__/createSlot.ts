@@ -4,7 +4,7 @@ import { DeepPartial } from "../../../utils/deepPartial";
 import { createDoctor } from "../../doctor/__fixtures__/createDoctor";
 import { ISlot, SLOT_REPEAT_TYPE_ENUM, slotTable } from "../slotTable";
 
-export const createSlot = async (args: DeepPartial<ISlot>): Promise<ISlot> => {
+export const createSlot = async (args?: DeepPartial<ISlot>): Promise<ISlot> => {
     const doctor = await createDoctor();
 
     const [slot] = await db

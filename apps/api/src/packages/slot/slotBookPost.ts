@@ -1,4 +1,4 @@
-import { differenceInMinutes, getDay, getHours, getMinutes } from "date-fns";
+import { getDay, getHours } from "date-fns";
 import { and, eq } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
@@ -7,6 +7,8 @@ import { Result } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { bookingTable } from "../booking/bookingTable";
 import { SLOT_REPEAT_TYPE_ENUM, slotTable } from "../slot/slotTable";
+import { getTimeSlot } from "./lib/getTimeSlot";
+import { getTimeSlots } from "./lib/getTimeSlots";
 
 const slotBookPostParams = z.object({
     id: z.string().uuid(),
@@ -79,25 +81,12 @@ const slotBookPostHandler: RequestHandler<
         return;
     }
 
-    const timeSlotCount =
-        differenceInMinutes(slot.endTime, slot.startTime) / slot.duration;
+    const timeSlots = getTimeSlots(slot);
 
-    const availableTimeSlots = Array.from<boolean>({
-        length: timeSlotCount,
-    }).fill(true, 0, timeSlotCount);
-
-    const slotEndMinutes =
-        getHours(slot.endTime) * 60 + getMinutes(slot.endTime);
-    const selectedStartMinutes =
-        getHours(selectedStart) * 60 + getMinutes(selectedStart);
-
-    const selectedTimeSlot =
-        timeSlotCount -
-        Math.abs(slotEndMinutes - selectedStartMinutes) / slot.duration;
+    const selectedTimeSlot = getTimeSlot(slot, selectedStart);
 
     // check if booking time is within time slots of the day
-    if (!availableTimeSlots[selectedTimeSlot]) {
-        console.log("4");
+    if (timeSlots[selectedTimeSlot] === undefined) {
         res.status(400);
         res.json({ success: false, error: "Booking time not available" });
         return;
