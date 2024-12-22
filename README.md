@@ -1,72 +1,36 @@
-# Turborepo Docker starter
+# Doctor's calendar (better name to come)
 
 This is an official Docker starter Turborepo.
 
-## Using this example
+## How to setup
 
-Run the following command:
+### Development
 
-```sh
-npx create-turbo@latest -e with-docker
-```
+1. Install dependencies using `pnpm install`
+2. Add your database url to `.env` file according to the `.env.example` file
+3. Run `pnpm dev` to start the server
 
-## What's inside?
+### Running with Docker
 
-This Turborepo includes the following:
+- To run the whole monorepo with docker just do `docker-compose up -d`
 
-### Apps and Packages
+### API Documentation
 
-- `web`: a [Next.js](https://nextjs.org/) app
-- `api`: an [Express](https://expressjs.com/) server
-- `@repo/ui`: a React component library
-- `@repo/logger`: Isomorphic logger (a small wrapper around console.log)
-- `@repo/eslint-config`: ESLint presets
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
-- `@repo/jest-presets`: Jest configurations
+- The API documentation can be found at [/apps/api/src/openapi-docs.json](/apps/api/src/openapi-docs.json) or at [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Features
 
-### Docker
+- Create doctors
+- Create slots with different repeat types
+- Book slots
+- View available slots
+- View all bookings
 
-This repo is configured to be built with Docker, and Docker compose. To build all apps in this repo:
+## Technologies
 
-```
-# Install dependencies
-yarn install
-
-# Create a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
-docker network create app_network
-
-# Build prod using new BuildKit engine
-COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
-
-# Start prod in detached mode
-docker-compose -f docker-compose.yml up -d
-```
-
-Open http://localhost:3000.
-
-To shutdown all running containers:
-
-```
-# Stop all running containers
-docker kill $(docker ps -q) && docker rm $(docker ps -a -q)
-```
-
-### Remote Caching
-
-This example includes optional remote caching. In the Dockerfiles of the apps, uncomment the build arguments for `TURBO_TEAM` and `TURBO_TOKEN`. Then, pass these build arguments to your Docker build.
-
-You can test this behavior using a command like:
-
-`docker build -f apps/web/Dockerfile . --build-arg TURBO_TEAM=“your-team-name” --build-arg TURBO_TOKEN=“your-token“ --no-cache`
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-%23404d59.svg?logo=express&logoColor=%2361DAFB)](https://expressjs.com)
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=fff)](https://vitest.dev/)
+[![Drizzle](https://img.shields.io/badge/Drizzle-C5F74F?logo=drizzle&logoColor=000)](https://orm.drizzle.team/)
+[![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](https://www.docker.com/)
