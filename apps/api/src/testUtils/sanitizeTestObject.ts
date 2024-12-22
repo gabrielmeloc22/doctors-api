@@ -17,6 +17,15 @@ export const sanitizeTestObject = (
             return { ...acc, [k]: `FROZEN-${k.toUpperCase()}` };
         }
 
+        if (v && Array.isArray(v)) {
+            return {
+                ...acc,
+                [k]: v.map((item: Record<string, unknown>) =>
+                    sanitizeTestObject({ ...args, obj: item })
+                ),
+            };
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (v && Object.getPrototypeOf(v).constructor.name === "Object") {
             return {
