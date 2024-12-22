@@ -16,8 +16,8 @@ type DoctorBookingGetParams = z.infer<typeof doctorBookingGetParams>;
 type DoctorBookingGetBody = unknown;
 
 const doctorBookingGetQuery = z.object({
-    start_time: z.string().date(),
-    end_time: z.string().date(),
+    start_time: z.string().datetime(),
+    end_time: z.string().datetime(),
 });
 
 type DoctorBookingGetQuery = z.infer<typeof doctorBookingGetQuery>;
@@ -56,7 +56,7 @@ const doctorBookingGetHandler: RequestHandler<
             )
         );
 
-    res.status(201);
+    res.status(200);
     res.json({
         success: true,
         bookings: bookings.map(({ booking }) => ({

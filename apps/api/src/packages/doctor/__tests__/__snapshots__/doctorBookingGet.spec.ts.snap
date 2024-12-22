@@ -1,0 +1,50 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should get bookings within the date range 1`] = `
+{
+  "bookings": [
+    {
+      "id": "FROZEN-ID",
+      "patient_id": "1",
+      "reason": "checkup",
+      "slot_id": "FROZEN-SLOT_ID",
+      "time": "2024-12-23T10:00:00.000Z",
+    },
+    {
+      "id": "FROZEN-ID",
+      "patient_id": "1",
+      "reason": "checkup",
+      "slot_id": "FROZEN-SLOT_ID",
+      "time": "2024-12-23T10:30:00.000Z",
+    },
+    {
+      "id": "FROZEN-ID",
+      "patient_id": "1",
+      "reason": "checkup",
+      "slot_id": "FROZEN-SLOT_ID",
+      "time": "2024-12-25T10:00:00.000Z",
+    },
+  ],
+  "success": true,
+}
+`;
+
+exports[`should validate params and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "start_time",
+      ],
+    },
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "end_time",
+      ],
+    },
+  ],
+  "success": false,
+}
+`;
