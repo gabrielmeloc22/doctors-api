@@ -1,20 +1,19 @@
+import { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { eq } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
-import { Result } from "../../utils/result";
+import { getResultSchema } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { ValueOf } from "../../utils/valueOf";
 import { SLOT_REPEAT_TYPE_ENUM, slotTable } from "../slot/slotTable";
 import { doctorTable } from "./doctorTable";
 
-const doctorSlotCreatePostParams = z.object({
-    id: z.string(),
+const doctorSlotPostParams = z.object({
+    id: z.string().uuid(),
 });
 
-type DoctorSlotCreatePostParams = z.infer<typeof doctorSlotCreatePostParams>;
-
-const doctorSlotCreatePostBodySchema = z.object({
+const doctorSlotPostBodySchema = z.object({
     start_time: z.string().datetime(),
     end_time: z.string().datetime(),
     duration: z.union([z.literal(30), z.literal(15)]),
@@ -36,22 +35,63 @@ const doctorSlotCreatePostBodySchema = z.object({
         .optional(),
 });
 
-type DoctorSlotCreatePostBody = z.infer<typeof doctorSlotCreatePostBodySchema>;
+const doctorSlotPostResult = getResultSchema({
+    slot: z.object({
+        doctor_id: z.string(),
+        start_time: z.string(),
+        end_time: z.string().nullable(),
+        duration: z.number(),
+        repeat: z.object({
+            type: z.string(),
+            end: z.string().nullable(),
+            days: z.array(z.number()).nullable(),
+        }),
+    }),
+});
 
-type DoctorsSlotCreatePostResult = Result<{
-    slot: {
-        doctor_id: string;
-        start_time: string;
-        end_time: string | null;
-        duration: number;
-        repeat: { type: string; end: string | null; days: number[] | null };
-    };
-}>;
+type DoctorSlotPostParams = z.infer<typeof doctorSlotPostParams>;
 
-const doctorSlotCreatePostHandler: RequestHandler<
-    DoctorSlotCreatePostParams,
+type DoctorSlotPostBody = z.infer<typeof doctorSlotPostBodySchema>;
+
+type DoctorsSlotCreatePostResult = z.infer<typeof doctorSlotPostResult>;
+
+export const doctorSlotPostsDocs: RouteConfig = {
+    method: "post",
+    path: "/doctors/{id}/slots",
+    summary: "Creates a new slot",
+    request: {
+        params: doctorSlotPostParams,
+        body: {
+            content: {
+                "application/json": { schema: doctorSlotPostBodySchema },
+            },
+        },
+    },
+
+    responses: {
+        201: {
+            description: "Slot created",
+            content: {
+                "application/json": {
+                    schema: doctorSlotPostResult.options[1],
+                },
+            },
+        },
+        400: {
+            description: "Invalid payload",
+            content: {
+                "application/json": {
+                    schema: doctorSlotPostResult.options[0],
+                },
+            },
+        },
+    },
+};
+
+const doctorSlotPostHandler: RequestHandler<
+    DoctorSlotPostParams,
     DoctorsSlotCreatePostResult,
-    DoctorSlotCreatePostBody
+    DoctorSlotPostBody
 > = async (req, res) => {
     const body = req.body;
 
@@ -137,8 +177,8 @@ const doctorSlotCreatePostHandler: RequestHandler<
 
 export const doctorSlotPost: RequestHandler[] = [
     validateRequest({
-        body: doctorSlotCreatePostBodySchema,
-        params: doctorSlotCreatePostParams,
+        body: doctorSlotPostBodySchema,
+        params: doctorSlotPostParams,
     }),
-    doctorSlotCreatePostHandler as RequestHandler,
+    doctorSlotPostHandler as RequestHandler,
 ];

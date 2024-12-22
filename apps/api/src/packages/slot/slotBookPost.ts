@@ -1,9 +1,10 @@
+import { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { getDay, getHours } from "date-fns";
 import { and, eq } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
-import { Result } from "../../utils/result";
+import { getResultSchema } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { bookingTable } from "../booking/bookingTable";
 import { SLOT_REPEAT_TYPE_ENUM, slotTable } from "../slot/slotTable";
@@ -14,25 +15,60 @@ const slotBookPostParams = z.object({
     id: z.string().uuid(),
 });
 
-type SlotBookPostParams = z.infer<typeof slotBookPostParams>;
-
 const slotBookPostBodySchema = z.object({
     reason: z.string(),
     patient_id: z.string(),
     start_time: z.string().datetime(),
 });
 
+const slotBookPostResult = getResultSchema({
+    booking: z.object({
+        id: z.string(),
+        slot_id: z.string(),
+        patient_id: z.string(),
+        reason: z.string(),
+        time: z.string(),
+    }),
+});
+
+type SlotBookPostParams = z.infer<typeof slotBookPostParams>;
+
 type SlotBookPostBody = z.infer<typeof slotBookPostBodySchema>;
 
-type SlotBookPostResult = Result<{
-    booking: {
-        id: string;
-        slot_id: string;
-        patient_id: string;
-        reason: string;
-        time: string;
-    };
-}>;
+type SlotBookPostResult = z.infer<typeof slotBookPostResult>;
+
+export const slotBookPostDocs: RouteConfig = {
+    method: "post",
+    path: "/slots/{id}/book",
+    summary: "Creates a new slot",
+    request: {
+        params: slotBookPostParams,
+        body: {
+            content: {
+                "application/json": { schema: slotBookPostBodySchema },
+            },
+        },
+    },
+
+    responses: {
+        201: {
+            description: "Slot created",
+            content: {
+                "application/json": {
+                    schema: slotBookPostResult.options[1],
+                },
+            },
+        },
+        400: {
+            description: "Invalid payload",
+            content: {
+                "application/json": {
+                    schema: slotBookPostResult.options[0],
+                },
+            },
+        },
+    },
+};
 
 const slotBookPostHandler: RequestHandler<
     SlotBookPostParams,

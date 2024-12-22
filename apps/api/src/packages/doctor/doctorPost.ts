@@ -1,8 +1,9 @@
+import { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { eq, or } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
-import { Result } from "../../utils/result";
+import { getResultSchema } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { doctorTable } from "./doctorTable";
 
@@ -18,17 +19,53 @@ const doctorCreatePostBodySchema = z.object({
     last_name: z.string().max(128, "Last name is too long"),
 });
 
+const doctorsSlotCreatePostResult = getResultSchema({
+    doctor: z.object({
+        id: z.string(),
+        username: z.string(),
+        email: z.string(),
+        first_name: z.string(),
+        last_name: z.string(),
+    }),
+});
+
 export type DoctorCreatePostBody = z.infer<typeof doctorCreatePostBodySchema>;
 
-export type DoctorsCreatePostResult = Result<{
-    doctor: {
-        id: string;
-        username: string;
-        email: string;
-        first_name: string;
-        last_name: string;
-    };
-}>;
+export type DoctorsCreatePostResult = z.infer<
+    typeof doctorsSlotCreatePostResult
+>;
+
+export const doctorPostDocs: RouteConfig = {
+    method: "post",
+    path: "/doctors",
+    summary: "Creates a new doctor",
+    request: {
+        body: {
+            content: {
+                "application/json": { schema: doctorCreatePostBodySchema },
+            },
+        },
+    },
+
+    responses: {
+        201: {
+            description: "Doctor created",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[1],
+                },
+            },
+        },
+        400: {
+            description: "Invalid payload",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[0],
+                },
+            },
+        },
+    },
+};
 
 const doctorCreatePostHandler: RequestHandler<
     DoctorCreatePostParams,

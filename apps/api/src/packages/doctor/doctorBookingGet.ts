@@ -1,36 +1,70 @@
+import { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { and, eq, gte, lte } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
-import { Result } from "../../utils/result";
+import { getResultSchema } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { bookingTable } from "../booking/bookingTable";
 import { slotTable } from "../slot/slotTable";
 
 const doctorBookingGetParams = z.object({
-    id: z.string(),
+    id: z.string().uuid(),
 });
-
-type DoctorBookingGetParams = z.infer<typeof doctorBookingGetParams>;
-
-type DoctorBookingGetBody = unknown;
 
 const doctorBookingGetQuery = z.object({
     start_time: z.string().datetime(),
     end_time: z.string().datetime(),
 });
 
+const doctorsSlotCreatePostResult = getResultSchema({
+    bookings: z.array(
+        z.object({
+            id: z.string(),
+            slot_id: z.string(),
+            patient_id: z.string(),
+            reason: z.string(),
+            time: z.string(),
+        })
+    ),
+});
+
+export const doctorBookingGetDocs: RouteConfig = {
+    method: "get",
+    path: "/doctors/{id}/bookings",
+    summary: "Returns all bookings for a doctor",
+    request: {
+        params: doctorBookingGetParams,
+        query: doctorBookingGetQuery,
+    },
+
+    responses: {
+        200: {
+            description: "Successful response",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[1],
+                },
+            },
+        },
+        400: {
+            description: "Invalid payload",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[0],
+                },
+            },
+        },
+    },
+};
+
+type DoctorBookingGetBody = unknown;
+
+type DoctorBookingGetParams = z.infer<typeof doctorBookingGetParams>;
+
 type DoctorBookingGetQuery = z.infer<typeof doctorBookingGetQuery>;
 
-type DoctorsSlotCreatePostResult = Result<{
-    bookings: {
-        id: string;
-        slot_id: string;
-        patient_id: string;
-        reason: string;
-        time: string;
-    }[];
-}>;
+type DoctorsSlotCreatePostResult = z.infer<typeof doctorsSlotCreatePostResult>;
 
 const doctorBookingGetHandler: RequestHandler<
     DoctorBookingGetParams,

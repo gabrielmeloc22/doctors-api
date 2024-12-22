@@ -1,10 +1,11 @@
+import { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { endOfDay, getDay, getDayOfYear, startOfDay } from "date-fns";
 import { and, gte, lte } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
 import { db } from "../../database/db";
 import { getDatesInterval } from "../../utils/getDatesInterval";
-import { Result } from "../../utils/result";
+import { getResultSchema } from "../../utils/result";
 import { validateRequest } from "../../utils/validateRequest";
 import { IBooking } from "../booking/bookingTable";
 import { getTimeSlot } from "../slot/lib/getTimeSlot";
@@ -16,32 +17,63 @@ const doctorAvailableSlotsGetParams = z.object({
     id: z.string(),
 });
 
-type DoctorAvailableSlotsGetParams = z.infer<
-    typeof doctorAvailableSlotsGetParams
->;
-
-type DoctorAvailableSlotsGetBody = unknown;
-
 const doctorAvailableSlotsGetQuery = z.object({
     start_time: z.string().datetime(),
     end_time: z.string().datetime(),
 });
 
+const slotSchema = z.object({
+    id: z.string(),
+    time_slot: z.number(),
+    start_time: z.string(),
+});
+
+const doctorsSlotCreatePostResult = getResultSchema({
+    slots: z.record(z.string().datetime(), z.array(slotSchema)),
+});
+
+type DoctorAvailableSlotsGetBody = unknown;
+
+type DoctorAvailableSlotsGetParams = z.infer<
+    typeof doctorAvailableSlotsGetParams
+>;
+
 type DoctorAvailableSlotsGetQuery = z.infer<
     typeof doctorAvailableSlotsGetQuery
 >;
 
-type SlotData = {
-    id: string;
-    time_slot: number;
-    start_time: string;
+type DoctorsSlotCreatePostResult = z.infer<typeof doctorsSlotCreatePostResult>;
+
+type SlotData = z.infer<typeof slotSchema>;
+
+export const doctorAvailableSlotsGetDocs: RouteConfig = {
+    method: "get",
+    path: "/doctors/{id}/available_slots",
+    summary: "Returns all available slots for a doctor given a data range",
+    request: {
+        params: doctorAvailableSlotsGetParams,
+        query: doctorAvailableSlotsGetQuery,
+    },
+
+    responses: {
+        200: {
+            description: "Successful response",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[1],
+                },
+            },
+        },
+        400: {
+            description: "Invalid payload",
+            content: {
+                "application/json": {
+                    schema: doctorsSlotCreatePostResult.options[0],
+                },
+            },
+        },
+    },
 };
-
-type SlotsAggregateData = Record<string, SlotData[]>;
-
-type DoctorsSlotCreatePostResult = Result<{
-    slots: SlotsAggregateData;
-}>;
 
 const doctorAvailableSlotsGetHandler: RequestHandler<
     DoctorAvailableSlotsGetParams,
