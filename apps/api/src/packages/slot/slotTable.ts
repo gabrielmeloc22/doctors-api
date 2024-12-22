@@ -1,5 +1,7 @@
+import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
 import { idField, timestampField } from "../../database/schemaDefaults";
+import { bookingTable } from "../booking/bookingTable";
 import { doctorTable } from "../doctor/doctorTable";
 
 export const slotRepeatTypeEnum = t.pgEnum("slot_repeat_type", [
@@ -28,5 +30,9 @@ export const slotTable = t.pgTable("slot", {
     ...timestampField,
     ...idField,
 });
+
+export const slotRelations = relations(slotTable, ({ many }) => ({
+    bookings: many(bookingTable),
+}));
 
 export type ISlot = typeof slotTable.$inferSelect;

@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import * as t from "drizzle-orm/pg-core";
 import { idField, timestampField } from "../../database/schemaDefaults";
 import { slotTable } from "../slot/slotTable";
@@ -5,10 +6,7 @@ import { slotTable } from "../slot/slotTable";
 export const bookingTable = t.pgTable(
     "booking",
     {
-        slotId: t
-            .uuid()
-            .references(() => slotTable.id)
-            .notNull(),
+        slotId: t.uuid().notNull(),
         patientId: t.varchar({ length: 256 }).notNull(),
         reason: t.varchar({ length: 256 }).notNull(),
         time: t.timestamp().notNull(),
@@ -21,3 +19,12 @@ export const bookingTable = t.pgTable(
         },
     ]
 );
+
+export const postsRelations = relations(bookingTable, ({ one }) => ({
+    slot: one(slotTable, {
+        fields: [bookingTable.slotId],
+        references: [slotTable.id],
+    }),
+}));
+
+export type IBooking = typeof bookingTable.$inferInsert;

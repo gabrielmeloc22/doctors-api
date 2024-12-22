@@ -3,9 +3,10 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 
 import { sql } from "drizzle-orm";
 import { afterEach, beforeEach, vi } from "vitest";
+import { schema } from "../database/db";
 
 vi.doMock("../database/db.ts", () => {
-    const db = drizzle({ casing: "camelCase" });
+    const db = drizzle({ casing: "camelCase", schema });
 
     return { db };
 });
