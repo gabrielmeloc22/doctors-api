@@ -9,6 +9,61 @@ import {
 import { SLOT_REPEAT_TYPE_ENUM, slotTable } from "../../slot/slotTable";
 import { createDoctor } from "../__fixtures__/createDoctor";
 
+it("should validate params and return 400", async () => {
+    const app = createApp();
+
+    const doctor = await createDoctor();
+
+    const payload = {
+        doctor_id: doctor.id,
+        start_time: new Date("2025-01-01T08:00:00.000Z"),
+        end_time: new Date("2025-01-01T08:30:00.000Z"),
+        duration: 30,
+        repeat: {
+            type: SLOT_REPEAT_TYPE_ENUM.DAILY,
+            end: new Date("2025-01-01T08:00:00.000Z"),
+            days: [1, 3, 5], // monday, wednesday, friday
+        },
+    };
+
+    const response = await request(app.listen())
+        .post("/doctors/0a523035-fcca-4bbd-a7e6-3918e4689/slots")
+        .send(payload);
+
+    const body = response.body as Record<string, unknown>;
+
+    expect(response.status).toBe(400);
+
+    expect(body).toMatchSnapshot();
+});
+
+it("should validate body and return 400", async () => {
+    const app = createApp();
+
+    const doctor = await createDoctor();
+
+    const payload = {
+        start_time: "",
+        end_time: "",
+        duration: 50,
+        repeat: {
+            type: "type",
+            end: "",
+            days: [1, 3, 5, 8],
+        },
+    };
+
+    const response = await request(app.listen())
+        .post(`/doctors/${doctor.id}/slots`)
+        .send(payload);
+
+    const body = response.body as Record<string, unknown>;
+
+    expect(response.status).toBe(400);
+
+    expect(body).toMatchSnapshot();
+});
+
 it("should post, create a new slot and return 201", async () => {
     const app = createApp();
 
@@ -17,7 +72,7 @@ it("should post, create a new slot and return 201", async () => {
     const payload = {
         doctor_id: doctor.id,
         start_time: new Date("2025-01-01T08:00:00.000Z"),
-        end_time: new Date("2025-01-01T08:00:00.000Z"),
+        end_time: new Date("2025-01-01T08:30:00.000Z"),
         duration: 30,
         repeat: {
             type: SLOT_REPEAT_TYPE_ENUM.DAILY,
@@ -60,4 +115,66 @@ it("should post, create a new slot and return 201", async () => {
             frozenKeys: [...defaultFrozenKeys, "doctor_id"],
         })
     ).toMatchSnapshot();
+});
+
+it("should post with slot start time greater than end time and return 400", async () => {
+    const app = createApp();
+
+    const doctor = await createDoctor();
+
+    const payload = {
+        doctor_id: doctor.id,
+        start_time: new Date("2025-01-01T08:30:00.000Z"),
+        end_time: new Date("2025-01-01T08:00:00.000Z"),
+        duration: 30,
+        repeat: {
+            type: SLOT_REPEAT_TYPE_ENUM.DAILY,
+            end: new Date("2025-01-01T08:00:00.000Z"),
+            days: [1, 3, 5], // monday, wednesday, friday
+        },
+    };
+
+    const response = await request(app.listen())
+        .post(`/doctors/${doctor.id}/slots`)
+        .send(payload);
+
+    const body = response.body as Record<string, unknown>;
+
+    expect(response.status).toBe(400);
+
+    expect(body).toMatchObject({
+        success: false,
+        error: "Start time must be before end time",
+    });
+});
+
+it("should post with start time and end time not divisible by duration and return 400", async () => {
+    const app = createApp();
+
+    const doctor = await createDoctor();
+
+    const payload = {
+        doctor_id: doctor.id,
+        start_time: new Date("2025-01-01T08:00:00.000Z"),
+        end_time: new Date("2025-01-01T08:40:00.000Z"),
+        duration: 30,
+        repeat: {
+            type: SLOT_REPEAT_TYPE_ENUM.DAILY,
+            end: new Date("2025-01-01T08:00:00.000Z"),
+            days: [1, 3, 5], // monday, wednesday, friday
+        },
+    };
+
+    const response = await request(app.listen())
+        .post(`/doctors/${doctor.id}/slots`)
+        .send(payload);
+
+    const body = response.body as Record<string, unknown>;
+
+    expect(response.status).toBe(400);
+
+    expect(body).toMatchObject({
+        success: false,
+        error: "Invalid start and end time. Difference between start and end time must be an integer multiple of duration",
+    });
 });

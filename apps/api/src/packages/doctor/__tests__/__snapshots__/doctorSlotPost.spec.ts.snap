@@ -5,14 +5,61 @@ exports[`should post, create a new slot and return 201 1`] = `
   "slot": {
     "doctor_id": "FROZEN-DOCTOR_ID",
     "duration": 30,
-    "end_time": "2025-01-01T08:00:00.000Z",
+    "end_time": "2025-01-01T08:30:00.000Z",
+    "id": "FROZEN-ID",
     "repeat": {
       "days": null,
-      "end": "2025-01-01T08:00:00.000Z",
+      "end": "2025-01-01T08:30:00.000Z",
       "type": "DAILY",
     },
     "start_time": "2025-01-01T08:00:00.000Z",
   },
   "success": true,
+}
+`;
+
+exports[`should validate body and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "start_time",
+      ],
+    },
+    {
+      "message": "Invalid datetime",
+      "path": [
+        "end_time",
+      ],
+    },
+    {
+      "message": "Invalid input",
+      "path": [
+        "duration",
+      ],
+    },
+    {
+      "message": "Invalid input",
+      "path": [
+        "repeat",
+      ],
+    },
+  ],
+  "success": false,
+}
+`;
+
+exports[`should validate params and return 400 1`] = `
+{
+  "error": [
+    {
+      "message": "Invalid uuid",
+      "path": [
+        "id",
+      ],
+    },
+  ],
+  "success": false,
 }
 `;

@@ -1,4 +1,5 @@
 import { RouteConfig } from "@asteasolutions/zod-to-openapi";
+import { differenceInMinutes } from "date-fns";
 import { eq } from "drizzle-orm";
 import { RequestHandler } from "express";
 import { z } from "zod";
@@ -25,11 +26,11 @@ const doctorSlotPostBodySchema = z.object({
             z.object({
                 type: z.literal("WEEKLY"),
                 days: z.array(z.number().max(6)),
-                end: z.string().datetime(),
+                end: z.string().datetime().nullish(),
             }),
             z.object({
                 type: z.literal("DAILY"),
-                end: z.string().datetime(),
+                end: z.string().datetime().nullish(),
             }),
         ])
         .optional(),
@@ -37,14 +38,15 @@ const doctorSlotPostBodySchema = z.object({
 
 const doctorSlotPostResult = getResultSchema({
     slot: z.object({
+        id: z.string().uuid(),
         doctor_id: z.string(),
-        start_time: z.string(),
-        end_time: z.string().nullable(),
+        start_time: z.string().datetime(),
+        end_time: z.string().datetime().nullish(),
         duration: z.number(),
         repeat: z.object({
             type: z.string(),
-            end: z.string().nullable(),
-            days: z.array(z.number()).nullable(),
+            end: z.string().datetime().nullish(),
+            days: z.array(z.number()).nullish(),
         }),
     }),
 });
@@ -110,12 +112,39 @@ const doctorSlotPostHandler: RequestHandler<
         return;
     }
 
+    const startTime = new Date(body.start_time);
+    const endTime = new Date(body.end_time);
+
+    if (startTime >= endTime) {
+        res.status(400);
+        res.json({
+            success: false,
+            error: "Start time must be before end time",
+        });
+        return;
+    }
+
+    if ((differenceInMinutes(endTime, startTime) / body.duration) % 1 !== 0) {
+        res.status(400);
+        res.json({
+            success: false,
+            error: "Invalid start and end time. Difference between start and end time must be an integer multiple of duration",
+        });
+        return;
+    }
+
     const getRepeatEnd = (): { repeatEnd?: Date } => {
-        if (body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.DAILY) {
+        if (
+            body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.DAILY &&
+            body.repeat?.end
+        ) {
             return { repeatEnd: new Date(body.repeat.end) };
         }
 
-        if (body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.WEEKLY) {
+        if (
+            body.repeat?.type === SLOT_REPEAT_TYPE_ENUM.WEEKLY &&
+            body.repeat?.end
+        ) {
             return { repeatEnd: new Date(body.repeat.end) };
         }
 
@@ -162,6 +191,7 @@ const doctorSlotPostHandler: RequestHandler<
     res.json({
         success: true,
         slot: {
+            id: slot.id,
             doctor_id: slot.doctorId,
             duration: slot.duration,
             start_time: slot.startTime.toISOString(),
